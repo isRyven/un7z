@@ -100,7 +100,9 @@ int main(int argc, const char **argv)
 		    size_t filename_utf8_len = filename_utf16le_len * 3;
 		    SRes extract_res = SZ_OK;
 
-		    if (!f->IsDir) {
+		    if (f->IsDir) {
+		    	continue;
+		    } else {
 		        if (blockIndex != db.FileIndexToFolderIndexMap[fileIndex]) {
 		          SzFree(filename_utf8);
 		          filename_utf8 = NULL;
@@ -109,8 +111,6 @@ int main(int argc, const char **argv)
 		        extract_res = SzArEx_Extract(&db, &lookStream, fileIndex,
 		        &blockIndex, &outBuffer, &outBufferSize,
 				&offset, &outSizeProcessed);
-		    } else {
-		    	continue;
 		    }
 
 		   	if (filename_utf8_len > filename_utf8_capacity) {
@@ -136,6 +136,7 @@ int main(int argc, const char **argv)
 	}
 
 	SzArEx_Free(&db);
+	SzFree(filename_utf8);
 
 	if (res == SZ_OK) {
 	    return 0;
